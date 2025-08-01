@@ -24,7 +24,7 @@
                     <x-slot name="trigger">
                         <div class="flex items-center px-5">
                         <div class="shrink-0">
-                            <img class="size-10 rounded-full" src="{{ Auth::user()->avatar ? \Illuminate\Support\Facades\Storage::url(Auth::user()->avatar) : asset('img/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}" />
+                            <img class="size-10 rounded-full" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" />
                         </div>
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-hidden transition ease-in-out duration-150">
                             <div>{{ Auth::user()->name }}</div>
@@ -81,7 +81,7 @@
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="flex items-center px-5">
           <div class="shrink-0">
-            <img class="size-10 rounded-full" src="{{ Auth::user()->avatar ? \Illuminate\Support\Facades\Storage::url(Auth::user()->avatar) : asset('img/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}" />
+            <img class="size-10 rounded-full" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" />
           </div>
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>

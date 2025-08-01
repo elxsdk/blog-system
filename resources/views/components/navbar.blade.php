@@ -25,7 +25,7 @@
                 <button type="button" @click="isOpen = !isOpen" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-hidden cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                   <span class="absolute -inset-1.5"></span>
                   <span class="sr-only">Open user menu</span>
-                  <img class="size-8 rounded-full" src="{{ Auth::user()->avatar ? \Illuminate\Support\Facades\Storage::url(Auth::user()->avatar) : asset('img/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}" />
+                  <img class="size-8 rounded-full" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" />
                   <div class="text-gray-500 text-sm ml-4">{{ Auth::user()->name }}</div>
                   <div class="ms-1 text-gray-500">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -86,7 +86,7 @@
         @if (Auth::check())
         <div class="flex items-center px-5">
           <div class="shrink-0">
-            <img class="size-10 rounded-full" src="{{ Auth::user()->avatar ? \Illuminate\Support\Facades\Storage::url(Auth::user()->avatar) : asset('img/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}" />
+            <img class="size-10 rounded-full" src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" />
           </div>
           <div class="ml-3">
             <div class="text-base/5 font-medium text-white">{{ Auth::user()->username }}</div>

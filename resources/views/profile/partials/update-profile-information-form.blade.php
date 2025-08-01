@@ -73,7 +73,7 @@
 
         <div>
             <img class="w-20 h-20 rounded-full"
-            src="{{ Auth::user()->avatar ? \Illuminate\Support\Facades\Storage::url(Auth::user()->avatar) : asset('img/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}" id="avatar-preview">
+            src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" id="avatar-preview">
         </div>
 
         <div class="flex items-center gap-4">

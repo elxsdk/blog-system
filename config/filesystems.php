@@ -14,7 +14,7 @@ return [
     */
 
     'default' => env('FILESYSTEM_DISK', 'local'),
-    'default_public_disk' => env('PUBLIC_STORAGE_DISK', public)
+    'default_public_disk' => env('PUBLIC_STORAGE_DISK', 'public'),
 
     /*
     |--------------------------------------------------------------------------
