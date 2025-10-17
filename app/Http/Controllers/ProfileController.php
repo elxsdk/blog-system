@@ -32,10 +32,6 @@ class ProfileController extends Controller
         // $request->user()->fill($request->validated());
         $validated = $request->validated();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
         // if ($request->hasFile('avatar')) {
         //     if (!empty($request->user()->avatar)) {
         //         Storage::disk('public')->delete($request->user()->avatar);
@@ -44,30 +40,40 @@ class ProfileController extends Controller
         //     $validated['avatar'] = $path;
         // }
 
+        $user = $request->user();
+
         if ($request->avatar) {
-            if (!empty($request->user()->avatar)) {
-                Storage::disk(config('filesystem.default_public_disk'))->delete($request->user()->avatar);
+            if (!empty($user->avatar)) {
+                Storage::disk(config('filesystems.default_public_disk'))->delete($user->avatar);
             }
 
             $newFileName = Str::after($request->avatar, 'tmp/');
 
-            Storage::disk(config('filesystem.default_public_disk'))->move($request->avatar, "img/$newFileName");
+            Storage::disk(config('filesystems.default_public_disk'))->move($request->avatar, "img/$newFileName");
 
             $validated['avatar'] = "img/$newFileName";
         }
 
-        // $request->user()->save();
-        $request->user()->update($validated);
+        $user->fill($validated);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
     public function upload(Request $request)
     {
+        $path = null;
+
         if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('tmp', config('filesystem.default_public_disk'));
+            $path = $request->file('avatar')->store('tmp', config('filesystems.default_public_disk'));
         }
-        return $path;
+
+        return response($path ?? '', $path ? 201 : 422);
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
@@ -29,18 +30,20 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'min:5', 'max:21', 'alpha_num', 'unique:users'],
-            'email' => ['required', 'string', 'lowercase', 'email:dns', 'max:255', 'unique:' . User::class],
+            'username' => ['nullable', 'string', 'min:5', 'max:21', 'regex:/^[A-Za-z0-9._-]+$/', 'unique:users'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $username = $validated['username'] ?? $this->generateUsername($validated['name'], $validated['email']);
+
         $user = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $validated['name'],
+            'username' => $username,
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
         ]);
 
         event(new Registered($user));
@@ -48,5 +51,29 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
+    }
+
+    /**
+     * Generate a unique username when none is provided.
+     */
+    protected function generateUsername(string $name, string $email): string
+    {
+        $base = Str::slug($name, '_');
+
+        if ($base === '') {
+            $base = Str::slug(Str::before($email, '@'), '_');
+        }
+
+        $base = substr($base, 0, 21) ?: 'user';
+        $candidate = $base;
+        $suffix = 1;
+
+        while (User::where('username', $candidate)->exists()) {
+            $suffixString = (string) $suffix;
+            $candidate = substr($base, 0, 21 - strlen($suffixString)) . $suffixString;
+            $suffix++;
+        }
+
+        return $candidate;
     }
 }

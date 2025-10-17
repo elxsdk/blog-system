@@ -100,7 +100,7 @@ class PostDashboardController extends Controller
         Validator::make(
             $request->all(),
             [
-                'title' => 'required|min:3|max:120|unique:posts,title' . $post->id,
+                'title' => 'required|min:3|max:120|unique:posts,title,' . $post->id,
                 'category_id' => 'required',
                 'body' => 'required|min:50'
             ],
@@ -108,7 +108,7 @@ class PostDashboardController extends Controller
                 'title.required' => 'Kolom :attribute harus diisi!',
                 'category_id.required' => 'harus pilih satu :attribute!',
                 'body.required' => 'Isi :attribute tidak boleh kosong!',
-                'body.min' => ':attribute haurs :min karakter atau lebih!'
+                'body.min' => ':attribute harus :min karakter atau lebih!'
             ],
             [
                 'title' => 'judul',
