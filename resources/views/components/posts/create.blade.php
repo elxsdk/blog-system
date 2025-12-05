@@ -46,7 +46,7 @@
                         @enderror
                     </div>
                     <div class="mb-4"><label for="body"  class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Body</label><textarea id="body" name="body" rows="4" class="hidden @error('body') bg-red-50 border-red-500 text-red-900 focus:ring-red-500 focus:border-red-500 placeholder-red-700 @enderror block p-2.5 w-full text-sm text-gray-900 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Write post body here">{{ old('body') }}</textarea>
-                        <div id="editor">{!! old('body') !!}</div>
+                        <div id="editor" data-initial-content="{{ old('body') }}"></div>
                         @error('body')
                             <p class="mt-2 text-xs text-red-600 dark:text-red-500">{{ $message }}</p>
                         @enderror
@@ -67,23 +67,24 @@
         @push('script')
             <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
             <script>
+    const quillEditor = document.querySelector('#editor');
+    const initialContent = quillEditor.dataset.initialContent || '';
+    
     const quill = new Quill('#editor', {
         theme: 'snow',
         placeholder: 'Write post body here'
     });
 
+    if (initialContent) {
+        quill.root.innerHTML = initialContent;
+    }
+
     const postForm = document.querySelector('#post-form');
     const postBody = document.querySelector('#body');
-    const quillEditor = document.querySelector('#editor');
     
     postForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        const content = quillEditor.children[0].innerHTML;
-        // console.log(content);
-
-        postBody.value = content;
-
+        postBody.value = quillEditor.children[0].innerHTML;
         this.submit();
     })
 </script>

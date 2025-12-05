@@ -37,12 +37,6 @@ class PostDashboardController extends Controller
      */
     public function store(Request $request)
     {
-        //validation
-        // $validated = $request->validate([
-        //     'title' => 'required|unique:posts|min:3|max:120',
-        //     'category_id' => 'required',
-        //     'body' => 'required',
-        // ]);
 
         Validator::make(
             $request->all(),
@@ -80,6 +74,10 @@ class PostDashboardController extends Controller
      */
     public function show(Post $post)
     {
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('dashboard.show', ['post' => $post]);
     }
 
@@ -88,6 +86,10 @@ class PostDashboardController extends Controller
      */
     public function edit(Post $post)
     {
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         return view('dashboard.edit', ['post' => $post]);
     }
 
@@ -96,13 +98,16 @@ class PostDashboardController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //Validation
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         Validator::make(
             $request->all(),
             [
                 'title' => 'required|min:3|max:120|unique:posts,title,' . $post->id,
                 'category_id' => 'required',
-                'body' => 'required|min:50'
+                'body' => 'required|min:20'
             ],
             [
                 'title.required' => 'Kolom :attribute harus diisi!',
@@ -117,7 +122,6 @@ class PostDashboardController extends Controller
             ]
         )->validate();
 
-        //Update post
         $post->update([
             'title' => $request->title,
             'author_id' => Auth::user()->id,
@@ -126,7 +130,6 @@ class PostDashboardController extends Controller
             'body' => $request->body
         ]);
 
-        //Redirect
         return redirect('/dashboard')->with(['success' => 'Post kamu berhasil diperbarui!']);
     }
 
@@ -135,6 +138,10 @@ class PostDashboardController extends Controller
      */
     public function destroy(Post $post)
     {
+        if ($post->author_id !== Auth::id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $post->delete();
         return redirect('/dashboard')->with(['success' => 'Post kamu berhasil dihapus!']);
     }
