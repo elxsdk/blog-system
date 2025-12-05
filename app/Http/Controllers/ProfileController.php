@@ -28,17 +28,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-
-        // $request->user()->fill($request->validated());
         $validated = $request->validated();
-
-        // if ($request->hasFile('avatar')) {
-        //     if (!empty($request->user()->avatar)) {
-        //         Storage::disk('public')->delete($request->user()->avatar);
-        //     }
-        //     $path = $request->file('avatar')->store('img', 'public');
-        //     $validated['avatar'] = $path;
-        // }
 
         $user = $request->user();
 

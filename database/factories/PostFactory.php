@@ -19,13 +19,13 @@ class PostFactory extends Factory
      */
     public function definition(): array
     {
-        $title = fake()->sentence(rand(6, 8));
+        $title = fake('id_ID')->sentence(rand(6, 8));
         return [
             'title' => $title,
             'author_id' => User::factory(),
             'category_id' => Category::factory(),
             'slug' => Str::slug($title),
-            'body' => fake()->text
+            'body' => fake('id_ID')->text
         ];
     }
 }
